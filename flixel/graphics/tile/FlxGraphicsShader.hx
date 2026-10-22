@@ -11,8 +11,14 @@ class FlxGraphicsShader extends GraphicsShader
 		uniform bool hasColorTransform;
 	", true)
 	@:glVertexBody("
-		openfl_Alphav = openfl_Alpha * alpha;
-		
+		" +
+		#if wiiu
+		"openfl_Alphav = alpha;
+		openfl_ColorOffsetv = colorOffset / 255.0;
+		openfl_ColorMultiplierv = colorMultiplier;
+		"
+		#else
+		"openfl_Alphav = openfl_Alpha * alpha;
 		if (hasColorTransform)
 		{
 			if (openfl_HasColorTransform)
@@ -26,9 +32,31 @@ class FlxGraphicsShader extends GraphicsShader
 				openfl_ColorMultiplierv = colorMultiplier;
 			}
 		}
-	", true)
+		"
+		#end
+	, true)
 	@:glFragmentHeader("
-		uniform bool hasTransform;  // TODO: Is this still needed? Apparently, yes!
+		" +
+		#if wiiu
+		"uniform bool hasTransform;
+		uniform bool hasColorTransform;
+		vec4 flixel_texture2D(sampler2D bitmap, vec2 coord)
+		{
+			vec4 color = texture2D(bitmap, coord);
+			if (color.a == 0.0)
+				return vec4(0.0, 0.0, 0.0, 0.0);
+			
+			float noColor = 1.0 - step(0.001, openfl_ColorMultiplierv.a);
+			vec3 finalMult = mix(openfl_ColorMultiplierv.rgb, vec3(1.0), noColor);
+
+			color = vec4(color.rgb / color.a, color.a);
+			color = clamp(openfl_ColorOffsetv + (color * vec4(finalMult, 1.0)), 0.0, 1.0);
+			
+			return vec4(color.rgb * color.a, color.a);
+		}
+		"
+		#else
+		"uniform bool hasTransform;
 		uniform bool hasColorTransform;
 		vec4 flixel_texture2D(sampler2D bitmap, vec2 coord)
 		{
@@ -53,13 +81,24 @@ class FlxGraphicsShader extends GraphicsShader
 			
 			return color * openfl_Alphav;
 		}
-	", true)
+		"
+		#end
+	, true)
 	@:glFragmentSource("
 		#pragma header
 
 		void main(void)
-		{
+		{" +
+		#if wiiu
+		"
+			gl_FragColor = flixel_texture2D(bitmap, openfl_TextureCoordv) * openfl_Alphav;
+		" +
+		#else
+		"
 			gl_FragColor = flixel_texture2D(bitmap, openfl_TextureCoordv);
+		" +
+		#end 
+		"
 		}
 	", true)
 	public function new()

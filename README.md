@@ -1,3 +1,13 @@
+# Flixel for the Nintendo Wii U!
+
+This is a fork of Flixel based on commit `9f90434` from 15/10/2026.
+
+It includes modifications to support rendering via on the Wii U. This is a highly experimental port, and many things may not work or may not behave like a typical Lime target.
+
+To use it, you'll need [Lime-Cafe](https://github.com/Slushi-Github/lime-cafe), and [OpenFL-Cafe](https://github.com/Slushi-Github/openfl)
+
+-----
+
 [![](https://raw.githubusercontent.com/HaxeFlixel/haxeflixel.com/master/content/_static/images/flixel-logos/HaxeFlixel.png)](http://haxeflixel.com/)
 
 [flixel](https://github.com/HaxeFlixel/flixel) | [addons](https://github.com/HaxeFlixel/flixel-addons) | [ui](https://github.com/HaxeFlixel/flixel-ui) | [demos](https://github.com/HaxeFlixel/flixel-demos) | [tools](https://github.com/HaxeFlixel/flixel-tools) | [templates](https://github.com/HaxeFlixel/flixel-templates) | [docs](https://github.com/HaxeFlixel/flixel-docs) | [haxeflixel.com](https://github.com/HaxeFlixel/haxeflixel.com) | [türkçe](https://github.com/HaxeFlixel/flixel/blob/dev/.github/README_TR.md)
